@@ -1,7 +1,7 @@
 // TODO: answer here
 import { Input, Container, Grid, GridItem, Button, Stack, Divider, Text, Link, Center } from "@chakra-ui/react"
 import { useState, useEffect, React } from "react"
-import { auth } from '../api/auth'
+// import { auth } from '../api/auth'
 import "./Login.css"
 
 function App() {

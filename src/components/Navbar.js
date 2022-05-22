@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import React from "react"
-
-import { getSession } from "../api/auth"
+import { getSession, getCsrfToken, auth } from "../api/auth"
 import { useContext } from "react"
 import { SessionContext } from "../context/SessionContext"
 import {
@@ -36,27 +35,61 @@ import {
   ChevronRightIcon,
   InfoOutlineIcon,
 } from '@chakra-ui/icons';
+import axios from "axios"
 
 export default function Navbar() {
   // TODO: answer here
-  const { isOpen, onToggle } = useDisclosure()
   const [user, setUser] = useState({
     email: '',
     id: '',
     image: '',
     name: '',
   })
+  let token = ''
 
-  // getSession().then(response => {
-  //   const {data} = response
-  //   const newUser = {
-  //     ...data.user
-  //   }
-  //   setUser(newUser)
-  // })
+  useEffect(() => {
+    fetchUser()
+    getToken()
 
-  console.log('hello')
+    // getPostList()
+    }, [])
+  
+    const fetchUser = async () => {
+      try {
+      const response = await getSession()
+      const {data} = response
+      if (data.user) setUser(data.user)
+      else window.location.assign('http://localhost:3000/login')
+    }
+    catch(error) {
+      console.log(error)
+    }
+  }
+  
+  const getToken = async () => {
+    try {
+      const response = await getCsrfToken()
+      const {data} = response
+      token = data.csrfToken
+    }
+    catch(error) {
+      console.log(error)
+    }
+  }
 
+  const getPostList = async () => {
+    try {
+      console.log(token)
+      const response = await axios.get('/post/list')
+      console.log(response)
+    }
+    catch(error) {
+      console.log(error)
+    }
+  }
+  
+  const { isOpen, onToggle } = useDisclosure()
+  
   return (
     <Box 
       bg={useColorModeValue('white', 'gray.800')} 
@@ -116,7 +149,7 @@ export default function Navbar() {
               <MenuList>
                 <MenuItem icon={<InfoOutlineIcon />}>Profile</MenuItem>
                 <Divider />
-                <MenuItem>Logout</MenuItem>
+                <MenuItem onClick={auth}>Logout</MenuItem>
               </MenuList>
             </Menu>
           </Stack>
