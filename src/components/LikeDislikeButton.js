@@ -13,16 +13,19 @@ export default function LikeDislikeButton({id, isLiked, isDisliked, likeCount, d
         try {
         const newPostList = await Promise.all(postList.map(async post => {
             if (post.id === id) {
-            post.liked = !post.liked
-            if (post.liked) {
-                post.disliked = false
-                post.likeCount += 1 
-            } else {
-                post.likeCount -= 1
-            }
-            const response = await axios.get(`/post/${post.id}/${post.liked ? 'like' : 'unlike'}`)
-            console.log(post)
-            console.log(response)
+                post.liked = !post.liked
+                if (post.liked) {
+                    if (post.disliked) {
+                        post.dislikeCount -= 1
+                        post.disliked = false
+                    }
+                    post.likeCount += 1 
+                } else {
+                    post.likeCount -= 1
+                }
+                const response = await axios.get(`/post/${post.id}/${post.liked ? 'like' : 'unlike'}`)
+                console.log(post)
+                console.log(response)
             }
             return post
         }))
@@ -38,16 +41,22 @@ export default function LikeDislikeButton({id, isLiked, isDisliked, likeCount, d
         try {
             const newPostList = await Promise.all(postList.map(async post => {
                 if (post.id === id) {
-                post.disliked = !post.disliked
-                if (post.disliked) {
-                    post.liked = false
-                    post.dislikeCount += 1 
-                } else {
-                    post.dislikeCount -= 1
-                }
-                const response = await axios.get(`/post/${post.id}/${post.disliked ? 'dislike' : 'undislike'}`)
-                console.log(post)
-                console.log(response)
+                    post.disliked = !post.disliked
+                    if (post.disliked) {
+                        console.log('liked: ', post.liked)
+                        if (post.liked) {
+                            post.likeCount -= 1
+                            post.liked = false
+                            // console.log('count liked: ', post.likeCount)
+                        }
+                        post.dislikeCount += 1 
+                    } else {
+                        // post.likedCount += 1
+                        post.dislikeCount -= 1
+                    }
+                    const response = await axios.get(`/post/${post.id}/${post.disliked ? 'dislike' : 'undislike'}`)
+                    console.log(post)
+                    console.log(response)
                 }
                 return post
             }))
@@ -67,8 +76,8 @@ export default function LikeDislikeButton({id, isLiked, isDisliked, likeCount, d
                 <IconButton onClick={() => setFillDislike(id)} icon={(!isLiked && isDisliked) ? <Icon as={BsHandThumbsDownFill} boxSize={'24px'} color='red.400'/> : <Icon as={BsHandThumbsDown} boxSize={'24px'} />} variant='ghost'/>
             </Flex>
         
-            <Box>
-                <Text fontWeight={'bold'} fontSize={'14px'}>{likeCount - dislikeCount} likes</Text>
+            <Box display={"flex"}>
+                <Text fontWeight={'bold'} fontSize={'14px'}>{likeCount} likes</Text>
             </Box>
         </Box>
     )

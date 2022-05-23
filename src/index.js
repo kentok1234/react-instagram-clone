@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react'
 import axios from 'axios';
 import './index.css';
+import Profile from './components/Profile';
 
 axios.defaults.baseURL = 'https://rg-km.riegan.my.id/api'
 axios.defaults.withCredentials = true
@@ -19,7 +20,9 @@ root.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<MainMenu />} />
-            <Route path='/profile' element={<Outlet />} />
+            <Route path='/profile' element={<Outlet />}>
+              <Route path=':id' element={<Profile />} />
+            </Route>
           </Route>
           <Route path="login" element={<Login />}/>
         </Routes>
