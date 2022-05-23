@@ -2,24 +2,17 @@ import { createContext, useState } from "react"
 
 export const SessionContext = createContext({
   // TODO: answer here
-  user: {
-    name: 'Guest',
     email: '',
-    image: '',
     id: '',
-  },
-  isLoggedIn: false,
-  setUser: (value) => {},
-  setIsLoggedIn: (value) => {}
-
+    image: '',
+    name: '',
 })
 
 export const SessionProvider = ({ children }) => {
   // TODO: answer here
-  const [user, setUser] = useState({})
-
+  const [session, setSession] = useState({})
   return (
-    <SessionContext.Provider value={user}>
+    <SessionContext.Provider value={{session, setSession}}>
       {children}
     </SessionContext.Provider>
   )

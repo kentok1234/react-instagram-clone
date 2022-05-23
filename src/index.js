@@ -2,19 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import Login from './Login/Login'
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
+import MainMenu from './MainMenu/MainMenu';
+import { BrowserRouter as Router, Outlet, Route, Routes } from "react-router-dom"
 import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react'
+import axios from 'axios';
 import './index.css';
 
+axios.defaults.baseURL = 'https://rg-km.riegan.my.id/api'
+axios.defaults.withCredentials = true
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ChakraProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<App />}/>
-          <Route path="/login" element={<Login />}/>
+          <Route path="/" element={<App />}>
+            <Route index element={<MainMenu />} />
+            <Route path='/profile' element={<Outlet />} />
+          </Route>
+          <Route path="login" element={<Login />}/>
         </Routes>
       </Router>
     </ChakraProvider>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import React from "react"
-import { getSession, getCsrfToken, auth } from "../api/auth"
+import {  getSession, auth } from "../api/auth"
 import { useContext } from "react"
 import { SessionContext } from "../context/SessionContext"
 import {
@@ -35,61 +35,31 @@ import {
   ChevronRightIcon,
   InfoOutlineIcon,
 } from '@chakra-ui/icons';
-import axios from "axios"
+import {BsPlusSquare} from "react-icons/bs";
 
 export default function Navbar() {
   // TODO: answer here
-  const [user, setUser] = useState({
-    email: '',
-    id: '',
-    image: '',
-    name: '',
-  })
-  let token = ''
-
+  const {session, setSession} = useContext(SessionContext)
+  const [user, setUser] = useState({})
+  const { isOpen, onToggle } = useDisclosure()
   useEffect(() => {
     fetchUser()
-    getToken()
-
-    // getPostList()
-    }, [])
+  }, [])
   
-    const fetchUser = async () => {
-      try {
+  const fetchUser = async () => {
+    try {
       const response = await getSession()
       const {data} = response
-      if (data.user) setUser(data.user)
+      if (data.user) {
+        setSession(data.user)
+        setUser(data.user)
+      }
       else window.location.assign('http://localhost:3000/login')
     }
     catch(error) {
       console.log(error)
     }
   }
-  
-  const getToken = async () => {
-    try {
-      const response = await getCsrfToken()
-      const {data} = response
-      token = data.csrfToken
-    }
-    catch(error) {
-      console.log(error)
-    }
-  }
-
-  const getPostList = async () => {
-    try {
-      console.log(token)
-      const response = await axios.get('/post/list')
-      console.log(response)
-    }
-    catch(error) {
-      console.log(error)
-    }
-  }
-  
-  const { isOpen, onToggle } = useDisclosure()
-  
   return (
     <Box 
       bg={useColorModeValue('white', 'gray.800')} 
@@ -142,6 +112,9 @@ export default function Navbar() {
             justify={'flex-end'}
             direction={'row'}
             spacing={6}>
+            <Box>
+              <IconButton icon={<Icon as={BsPlusSquare} boxSize='24px'/>} variant='ghost'/>
+            </Box>
             <Menu>
               <MenuButton>
                 <Avatar src={user.image} size='sm'/>
