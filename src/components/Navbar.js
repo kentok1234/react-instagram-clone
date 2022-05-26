@@ -8,13 +8,8 @@ import {
   Flex,
   Text,
   IconButton,
-  Button,
   Stack,
-  Collapse,
   Icon,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
@@ -31,8 +26,6 @@ import {
 import {
   HamburgerIcon,
   CloseIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
   InfoOutlineIcon,
 } from '@chakra-ui/icons';
 import { Link } from "react-router-dom"
@@ -59,7 +52,7 @@ export default function Navbar() {
         setSession(data.user)
         setUser(data.user)
       }
-      else window.location.assign('http://localhost:3000/login')
+      // else window.location.assign('http://localhost:3000/login')
     }
     catch(error) {
       console.log(error)
@@ -116,17 +109,16 @@ export default function Navbar() {
             />
           </Flex>
           <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-            <Link to="/" style={{textDecoration: 'none'}}>
+            <Link to="/" style={{textDecoration: 'none'}} aria-label="App Title">
               <Flex gap={2}>
                 <Image src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" alt="Instagram" aria-label="App Logo" />
-                <Text
-                  textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
+                <Link to={'/'}
                   fontFamily={'heading'}
                   color={useColorModeValue('gray.800', 'white')}
                   fontWeight='bold'
                   aria-label="App Title">
                     Clone
-                </Text>
+                </Link>
               </Flex>
             </Link>
 
@@ -146,14 +138,25 @@ export default function Navbar() {
             <Menu>
               <MenuButton>
                 <Avatar src={user.image} size='sm'/>
+                <Text fontWeight={"bold"} aria-label="Profile" hidden>{user.name}</Text>
               </MenuButton>
-              <MenuList>
-                <Link to={`/profile/${session.id}`}>
-                  <MenuItem icon={<InfoOutlineIcon />}>Profile</MenuItem>
-                </Link>
-                <Divider />
-                <MenuItem onClick={auth}>Logout</MenuItem>
-              </MenuList>
+              {(Object.keys(user).length === 0) ? 
+              (
+                <MenuList>
+                  <MenuItem aria-label="Login" onClick={auth}>Login</MenuItem>
+                </MenuList>
+
+              ) :
+              (
+                <MenuList>
+                  <Link to={`/profile/${session.id}`}>
+                    <MenuItem icon={<InfoOutlineIcon />}>Profile</MenuItem>
+                  </Link>
+                  <Divider />
+                  <MenuItem onClick={auth}>Logout</MenuItem>
+                </MenuList>
+              )
+              }
             </Menu>
           </Stack>
         </Flex>

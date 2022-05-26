@@ -9,6 +9,9 @@ import { ChakraProvider } from '@chakra-ui/react'
 import axios from 'axios';
 import './index.css';
 import Profile from './components/Profile';
+import { SessionProvider } from './context/SessionContext';
+import { PostProvider } from './context/PostContext';
+import Navbar from './components/Navbar';
 
 axios.defaults.baseURL = 'https://rg-km.riegan.my.id/api'
 axios.defaults.withCredentials = true
@@ -16,17 +19,22 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ChakraProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<App />}>
-            <Route index element={<MainMenu />} />
-            <Route path='/profile' element={<Outlet />}>
-              <Route path=':id' element={<Profile />} />
-            </Route>
-          </Route>
-          <Route path="login" element={<Login />}/>
-        </Routes>
-      </Router>
+      <SessionProvider>
+        <PostProvider>
+          <Router>
+            <Navbar/> 
+            <Routes>
+              <Route path="/" element={<App />}>
+                <Route index element={<MainMenu />} />
+                <Route path='/profile' element={<Outlet />}>
+                  <Route path=':UserId' element={<Profile />} />
+                </Route>
+              </Route>
+              <Route path="login" element={<Login />}/>
+            </Routes>
+          </Router>
+        </PostProvider>
+      </SessionProvider>
     </ChakraProvider>
   </React.StrictMode>
 );

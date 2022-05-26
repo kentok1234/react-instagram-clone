@@ -1,31 +1,34 @@
 import PostCard from '../components/PostCard'
 import LikeDislikeButton from '../components/LikeDislikeButton'
-import { useState, useEffect, createContext } from 'react'
+import { useEffect, useContext } from 'react'
 import { Box, Flex} from '@chakra-ui/react'
 import axios from 'axios'
 import moment from 'moment'
+import { PostContext } from '../context/PostContext'
 
-export const PostContext = createContext([])
+
+// export const PostContext = createContext([])
 
 function MainMenu() {
-    const [postList, setPostList] = useState([])
+    const {postList, setPostList} = useContext(PostContext)
+    console.log(postList)
     useEffect(() => {
         getPostList()
     }, [])
     const getPostList = async () => {
         try {
-        const response = await axios.get('/post/list')
-        const {data} = response
-        setPostList(data.data)
+            const response = await axios.get('/post/list')
+            const {data} = response
+            setPostList(data.data)
         }
         catch(error) {
-        console.log(error)
+            console.log(error)
         }
     }
 
-    console.log(postList)
+    // console.log(postList)
     return (
-        <PostContext.Provider value={{postList, setPostList}}>
+        <>
             <Flex gap={5} flexDirection='column'>
                 {postList.map(post => (
                 <Box key={post.id} bgColor={'white'} maxW='614px' border={'1px'} borderColor='gray.200' borderRadius={'5px'} overflow='hidden'>
@@ -45,7 +48,7 @@ function MainMenu() {
                 </Box>
                 ))}
             </Flex>
-        </PostContext.Provider>
+        </>
     )
 }
 
